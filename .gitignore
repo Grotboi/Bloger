@@ -1,2 +1,48 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+*.env
+
+# Distribution / packaging
+/dist/
+/build/
+/*.egg-info/
+*.dist-info/
+
+# Logs and databases
+*.log
+*.sqlite
+*.rdb
+/instance/
+
+# Flask cache
+/cache/
+
+# Redis dump file (if generated locally)
+dump.rdb
+
+# PyCharm / VSCode / other IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variable files
+.env
+.env.local
+
+# macOS specific
+.DS_Store
+
+# Thumbnails
+Thumbs.db
+
+# Testing artifacts
+htmlcov/
+.pytest_cache/

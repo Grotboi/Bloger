@@ -1,19 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Личная панель</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .post {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .post h3 {
+            margin-top: 0;
+        }
+        img {
+            max-width: 600px;
+            height: auto;
+            border-radius: 8px;
+        }
+        form input, form textarea, form button {
+            display: block;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>Admin Panel</h1>
-    <h1>Добро пожаловать, {{ user }}</h1>
-    <header>
-    <ul>
-<a href="{{ url_for('blog') }}">Мои посты</a><br>
-<a href="{{ url_for('add_post') }}">Написать пост</a><br>
-<a href="{{ url_for('logout') }}">Выйти</a>
-    </ul>
-    </header>
+
+    <!-- Приветствие -->
+    <h1>Привет, {{ user.name }} {{ user.surname }}</h1>
+    <p>ID: {{ user.id }}</p>
+
+    <!-- Форма добавления поста -->
+    <form method="post" action="{{ url_for('indexPanel') }}">
+        <input type="text" name="title" placeholder="Заголовок" required><br>
+        <textarea name="content" placeholder="Текст поста" required></textarea><br>
+        <input type="text" name="image_url" placeholder="Ссылка на картинку (необязательно)"><br>
+        <button type="submit">Опубликовать</button>
+    </form>
+
+  {% if posts %}
+    {% for post in posts %}
+        <div class="post">
+            <h3>{{ post[0] }}</h3>
+            <p>{{ post[1] }}</p>
+            {% if post[2] %}
+                <img src="{{ post[2] }}" alt="Картинка к посту" style="max-width: 600px;">
+            {% endif %}
+        </div>
+        <hr>
+    {% endfor %}
+{% else %}
+    <p>У вас пока нет постов.</p>
+{% endif %}
+
 </body>
 </html>

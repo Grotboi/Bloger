@@ -91,7 +91,7 @@ def aut():
     
     
 # Страница пользователя
-@app.route("/indexPanel.html")
+@app.route("/indexPanel.html", methods=["GET", "POST"])
 def indexPanel():
     if 'user' not in session:
         return redirect(url_for('aut'))
@@ -104,11 +104,48 @@ def indexPanel():
     cursor.execute("SELECT id, name, surname FROM user_reg_aut WHERE id = %s",
                        (username,))
     user_data2 = cursor.fetchone()
+    
+    if not user_data2:
+        session.pop("user", None)
+        return redirect(url_for('aut'))
+    
+    if request.method == "POST":
+        title = request.form.get("title")
+        content = request.form.get("content")
+        image_url = request.form.get("image_url")
+        
+        cursor.execute("Insert into posts(user_id, title, content, image_url) values (%s, %s, %s, %s)",
+                       (username, title, content, image_url))
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        return redirect(url_for('indexPanel'))  # ← после POST мы выходим отсюда!
+        
+       # Этот запрос ВСЕГДА выполняется, даже после POST
+    cursor.execute(
+        "SELECT title, content, image_url FROM posts WHERE user_id = %s ORDER BY created_at DESC",
+        (username,)
+    )
+    posts = cursor.fetchall()
+    
+    print("Полученные посты:", posts)
 
     cursor.close()
     conn.close()
     
-    return render_template("indexPanel.html", user=user_data2)    
+    return render_template(
+    "indexPanel.html",
+    user={
+        "id": user_data2[0],
+        "name": user_data2[1],
+        "surname": user_data2[2]
+    },
+    posts=posts
+)
+    
+    return render_template("indexPanel.html", user=user_data2, posts=posts)    
 
 
 
