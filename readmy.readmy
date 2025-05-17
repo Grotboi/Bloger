@@ -1,0 +1,9 @@
+
+res = requests.get("https://postman-echo.com/get")
+a = res.json()
+headers = a.get("headers")
+test = headers.get("host")
+print(test)
+
+
+   # us = [user[0] for user in a] if a else []
