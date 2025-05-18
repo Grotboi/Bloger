@@ -2,68 +2,67 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Личная панель</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-        .post {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-        .post h3 {
-            margin-top: 0;
-        }
-        img {
-            max-width: 600px;
-            height: auto;
-            border-radius: 8px;
-        }
-        form input, form textarea, form button {
-            display: block;
-            margin: 10px 0;
-            width: 100%;
-            max-width: 500px;
-            padding: 10px;
-            font-size: 16px;
-        }
-        .error {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <title>Блог</title>
 </head>
-<body>
+<body class="bg-light">
 
+  <div class="d-flex justify-content-end">
+  <button 
+    onclick="window.location.href='/'" 
+    class="btn btn-outline-danger btn-sm d-flex align-items-center">
+    <i class="bi bi-box-arrow-right me-1"></i> Выход
+  </button>
+</div>
+
+<div class="container py-5">
     <!-- Приветствие -->
-    <h1>Привет, {{ user.name }} {{ user.surname }}</h1>
-    <p>ID: {{ user.id }}</p>
+    <div class="text-center mb-4">
+        <h1 class="display-6">Привет, {{ user.name }} {{ user.surname }}</h1>
+        <p class="text-muted">ID: {{ user.id }}</p>
+    </div>
 
     <!-- Форма добавления поста -->
-    <form method="post" action="{{ url_for('indexPanel') }}">
-        <input type="text" name="title" placeholder="Заголовок" required><br>
-        <textarea name="content" placeholder="Текст поста" required></textarea><br>
-        <input type="text" name="image_url" placeholder="Ссылка на картинку (необязательно)"><br>
-        <button type="submit">Опубликовать</button>
-    </form>
+    <div class="card shadow-sm p-4 mb-5 bg-white rounded">
+        <h5 class="mb-4">Добавить новый пост</h5>
+        <form method="post" action="{{ url_for('indexPanel') }}">
+            <div class="mb-3">
+                <input type="text" name="title" class="form-control" placeholder="Заголовок" required>
+            </div>
+            <div class="mb-3">
+                <textarea name="content" class="form-control" rows="5" placeholder="Текст поста" required></textarea>
+            </div>
+            <div class="mb-3">
+                <input type="text" name="image_url" class="form-control" placeholder="Ссылка на картинку (необязательно)">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Опубликовать</button>
+        </form>
+    </div>
 
-  {% if posts %}
-    {% for post in posts %}
-        <div class="post">
-            <h3>{{ post[0] }}</h3>
-            <p>{{ post[1] }}</p>
-            {% if post[2] %}
-                <img src="{{ post[2] }}" alt="Картинка к посту" style="max-width: 600px;">
-            {% endif %}
+    <!-- Список постов -->
+    {% if posts %}
+        <h4 class="mb-4">Ваши посты:</h4>
+        {% for post in posts %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post[0] }}</h5>
+                    <p class="card-text">{{ post[1] }}</p>
+                    <form method="POST" action="{{ url_for('indexPanel') }}">
+                <input type="hidden" name="delete_title" value="{{ post.title }}">
+                <button type="submit">Удалить</button>
+            </form>
+                    {% if post[2] %}
+                        <img src="{{ post[2] }}" alt="Картинка к посту" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;">
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            У вас пока нет постов.
         </div>
-        <hr>
-    {% endfor %}
-{% else %}
-    <p>У вас пока нет постов.</p>
-{% endif %}
+    {% endif %}
+</div>
 
 </body>
 </html>

@@ -137,6 +137,8 @@ def indexPanel():
     cursor.close()
     conn.close()
     
+    cursor.execute()
+    
     return render_template(
     "indexPanel.html",
     user={
