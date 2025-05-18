@@ -15,22 +15,23 @@ def redic():
     
 @app.route("/index.html")
 def site():
-      hid_url = "https://postman-echo.com/get"
-      res = requests.get(hid_url)
-      inter = res.json()
-      headers = inter.get("headers", "No Simple")
-      data = headers.get("host")
-      connection = headers.get("connection")
-      accept = headers.get("accept")
-      return render_template("index.html", data = data, connection = connection, accept = accept)
+#      hid_url = "https://postman-echo.com/get"
+ #     res = requests.get(hid_url)
+ #     inter = res.json()
+ #     headers = inter.get("headers", "No Simple")
+ #     data = headers.get("host")
+ #     connection = headers.get("connection")
+  #    accept = headers.get("accept")
+      return render_template("index.html")
+  #  , data = data, connection = connection, accept = accept
 
 
-@app.route("/main.html", methods=["POST"])
-def test():
-    test1 = request.form.get("name_input")
-    post_data = {"input": test1}
-    mysc = requests.post("https://postman-echo.com/post", data=post_data)
-    return f"My opr: {post_data}"
+#@app.route("/main.html", methods=["POST"])
+#def test():
+ #   test1 = request.form.get("name_input")
+ #   post_data = {"input": test1}
+ #   mysc = requests.post("https://postman-echo.com/post", data=post_data)
+ #   return f"My opr: {post_data}"
    # return render_template("main.html", test1 = test1)
 
 @app.route("/indexRegistr.html")
