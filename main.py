@@ -45,6 +45,7 @@ def database():
     name = request.form.get("name")
     surname = request.form.get("surname")
     user_data = request.form.get("user_data")
+    password = request.form.get("password").strip()
     id_run = random.randint(1, 1000000)
     
     # Подключение к бд
@@ -52,8 +53,8 @@ def database():
                            user="postgres", password="root", port="8887")
     cursor = conn.cursor()
     # Запись в бд
-    cursor.execute("INSERT INTO user_reg_aut(id, name, surname, user_data) VALUES (%s, %s, %s, %s)", 
-                  (f"@{id_run}", name, surname, user_data))
+    cursor.execute("INSERT INTO user_reg_aut(id, name, surname, user_data, password) VALUES (%s, %s, %s, %s, %s)", 
+                  (f"@{id_run}", name, surname, user_data, password))
     conn.commit()
     cursor.close()
     conn.close()
@@ -70,23 +71,24 @@ def aut():
     if request.method == "POST":
         autname = request.form.get("autname")
         autsurname = request.form.get("autsurname")
+        autpassword = request.form.get("autpassword")
 
         # Подключение к БД
         conn = psycopg2.connect(dbname="User_Blog", host="localhost",
                                 user="postgres", password="root", port="8887")
         cursor = conn.cursor()
-        cursor.execute("SELECT id, name, surname FROM user_reg_aut WHERE name = %s AND surname = %s",
+        cursor.execute("SELECT id, name, surname, password FROM user_reg_aut WHERE name = %s AND surname = %s",
                        (autname, autsurname))
         user = cursor.fetchone()
 
         cursor.close()
         conn.close()
 
-        if user:
-            session['user'] = user[0]
-            return redirect(url_for('indexPanel'))  
+        if user and user[3] == autpassword:
+                session['user'] = user[0]
+                return redirect(url_for('indexPanel'))
         else:
-            error = "Неверное имя или фамилия"
+                error = "Неверное имя, фамилия или пароль"
     return render_template("indexAuto.html", error=error)
     
     
@@ -160,7 +162,7 @@ def indexPanel():
 
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(port=5000, debug=True)
 
 
 
